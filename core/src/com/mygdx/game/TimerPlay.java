@@ -6,7 +6,7 @@ import java.util.TimerTask;
 
 public class TimerPlay extends TimerTask {
 
-    static int seconds=60;
+    static int seconds=80;
     static String time="-1";
 
     @Override

@@ -50,16 +50,21 @@ public class Serv extends Listener {
 			timer.schedule(new TimerPlay(), 0, 1000);
 		}
 		System.out.println("Соединение установлено");
-		MessageBox message = new MessageBox(); //Создаем сообщения пакета.
+		/*MessageBox message = new MessageBox(); //Создаем сообщения пакета.
 		message.message = "Сейчас время: "+new Date().getHours()+":"+new Date().getMinutes(); //Пишем текст который будем отправлять клиенту.
-		c.sendTCP(message); // Так же можно отправить через UDP c.sendUDP(packetMessage);
+		c.sendTCP(message); // Так же можно отправить через UDP c.sendUDP(packetMessage);*/
 	}
 
 	//Используется когда клиент отправляет пакет серверу
 	public void received(Connection c, Object p){
 		System.out.println(TimerPlay.time);
 		System.out.println(TimerPlay.seconds);
-		if (p instanceof PlayerNameBox){//
+
+		if (p instanceof MessageBox){
+			server.sendToAllExceptTCP(c.getID(),p);
+		}
+
+		if (p instanceof PlayerNameBox){
 			server.sendToAllExceptTCP(c.getID(),p);
 		}
 
@@ -96,7 +101,7 @@ public class Serv extends Listener {
 	public void disconnected(Connection c){
 		count=0;
 		playersID=1;
-		TimerPlay.seconds=60;
+		TimerPlay.seconds=80;
 		TimerPlay.time="-1";
 		PlayersWaitingBox pw=new PlayersWaitingBox();
 		pw.count=-1;
