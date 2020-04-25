@@ -101,7 +101,7 @@ public class Serv extends Listener {
 	public void disconnected(Connection c){
 		count=0;
 		playersID=1;
-		TimerPlay.seconds=80;
+		TimerPlay.seconds=120;
 		TimerPlay.time="-1";
 		PlayersWaitingBox pw=new PlayersWaitingBox();
 		pw.count=-1;
