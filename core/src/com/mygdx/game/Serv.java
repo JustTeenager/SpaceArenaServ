@@ -16,11 +16,16 @@ public class Serv extends Listener {
 	private static int count=0;
 	private boolean full;
 	private static ArrayList<Connection> connectionsArray;
+	private static ArrayList<RoomClass> roomClasses;
 
 	static Timer timer;
 
 	public static void main(String[] args) throws Exception {
 		connectionsArray=new ArrayList<>();
+		roomClasses=new ArrayList<>();
+		RoomClass roomClassBegin=new RoomClass();
+		roomClassBegin.setClassNumber(1);
+		roomClasses.add(roomClassBegin);
 		//Создаем сервер
 		server = new Server();
 		System.out.println("Сервер создан");
@@ -43,21 +48,50 @@ public class Serv extends Listener {
 
 	//Используется когда клиент подключается к серверу
 	public void connected(Connection c){
-		connectionsArray.add(c);
-		count=connectionsArray.size();
-		if (count==2) {
+		Boolean completed=false;
+		RoomClass roomNonEmpty = null;
+		for (RoomClass room:roomClasses){
+			if (room.isFull()){
+				System.out.println(c.getID()+" WALKED THROUGH THE FULL ROOM");
+				continue;
+			}
+			else{
+				System.out.println(c.getID()+" ENTERED THE ROOM");
+				completed=true;
+				roomNonEmpty=room;
+				break;
+			}
+		}
+		if (roomNonEmpty==null){
+			roomNonEmpty=new RoomClass();
+			roomClasses.add(roomNonEmpty);
+			roomNonEmpty.enterConnection(c);
+			System.out.println("CONNECTED FROM NULL");
+			completed=false;
+		}
+		else {
+			roomNonEmpty.enterConnection(c);
+			System.out.println("CONNECTED FROM FULL");
+			completed=false;
+		}
+
+
+
+		/*if (count==2) {
 			timer=new Timer();
 			timer.schedule(new TimerPlay(), 0, 1000);
 		}
-		System.out.println("Соединение установлено");
-		/*MessageBox message = new MessageBox(); //Создаем сообщения пакета.
-		message.message = "Сейчас время: "+new Date().getHours()+":"+new Date().getMinutes(); //Пишем текст который будем отправлять клиенту.
-		c.sendTCP(message); // Так же можно отправить через UDP c.sendUDP(packetMessage);*/
+		System.out.println("Соединение установлено");*/
 	}
 
 	//Используется когда клиент отправляет пакет серверу
 	public void received(Connection c, Object p){
-		System.out.println(TimerPlay.time);
+		try {
+			for (RoomClass room:roomClasses){
+				if (room.isFull()) room.getReceived(c, p);
+			}
+		}catch (Exception e){}
+		/*System.out.println(TimerPlay.time);
 		System.out.println(TimerPlay.seconds);
 
 		if (p instanceof MessageBox){
@@ -94,12 +128,13 @@ public class Serv extends Listener {
 				server.sendToAllExceptTCP(c.getID(),box);
 				//server.sendToTCP(c.getID(),box);
 			}
-		}
+		}*/
 	}
 
 	//Используется когда клиент покидает сервер
 	public void disconnected(Connection c){
-		count=0;
+		connectionsArray.remove(c);
+		/*count=0;
 		playersID=1;
 		TimerPlay.seconds=120;
 		TimerPlay.time="-1";
@@ -118,6 +153,16 @@ public class Serv extends Listener {
 		catch(Exception e){}
 		System.out.println("DISCONNECTED");
 		System.out.println(TimerPlay.time);
-		System.out.println(TimerPlay.seconds);
+		System.out.println(TimerPlay.seconds);*/
+		try {
+			for (RoomClass room : roomClasses) {
+				if (room.isFull()) {
+					if (room.getFirstPlayerConnection().getID()==c.getID() || (room.getSecondPlayerConnection().getID()==c.getID())){
+					room.disconnetced(c);
+					roomClasses.remove(room);
+					}
+				}
+			}
+		}catch (Exception e){}
 	}
 }
