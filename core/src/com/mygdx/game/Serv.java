@@ -74,7 +74,7 @@ public class Serv extends Listener {
 			System.out.println("CONNECTED FROM FULL");
 			completed=false;
 		}
-
+		System.out.println("ROOM NUMBER = "+roomClasses.size());
 
 
 		/*if (count==2) {
@@ -88,9 +88,12 @@ public class Serv extends Listener {
 	public void received(Connection c, Object p){
 		try {
 			for (RoomClass room:roomClasses){
-				if (room.isFull()) room.getReceived(c, p);
+				if (room.isFull() && (c.getID()==room.getFirstPlayerConnection().getID() ||
+						c.getID()==room.getSecondPlayerConnection().getID())) room.getReceived(c, p);
 			}
-		}catch (Exception e){}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 		/*System.out.println(TimerPlay.time);
 		System.out.println(TimerPlay.seconds);
 
@@ -156,13 +159,16 @@ public class Serv extends Listener {
 		System.out.println(TimerPlay.seconds);*/
 		try {
 			for (RoomClass room : roomClasses) {
-				if (room.isFull()) {
 					if (room.getFirstPlayerConnection().getID()==c.getID() || (room.getSecondPlayerConnection().getID()==c.getID())){
+						System.out.println(c.getID());
+						System.out.println("DELETED");
 					room.disconnetced(c);
 					roomClasses.remove(room);
 					}
-				}
 			}
-		}catch (Exception e){}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		System.out.println("ROOM NUMBER FINAL = "+roomClasses.size());
 	}
 }
