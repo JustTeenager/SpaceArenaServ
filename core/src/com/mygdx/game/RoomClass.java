@@ -65,8 +65,8 @@ public class RoomClass {
             if (p instanceof CoordBox) {
                 CoordBox box = (CoordBox) p;
                 if (box.getPlayerIdentify() == -1) {
-                    box.Btime = timerPlay.getTime();
-                    System.out.println(box.Btime);
+                    box.boxTime = timerPlay.getTime();
+                    System.out.println(box.boxTime);
                     box.seconds = timerPlay.getSeconds();
                     box.setPlayerIdentify(c.getID());
                     if (c.getID()==firstPlayerConnection.getID())
@@ -77,7 +77,7 @@ public class RoomClass {
                     //playersID++;
                 } else {
                     //И здесь добавим коробку
-                    box.Btime = timerPlay.getTime();
+                    box.boxTime = timerPlay.getTime();
                     box.seconds = timerPlay.getSeconds();
                     if (c.getID()==firstPlayerConnection.getID())
                         Serv.server.sendToTCP(secondPlayerConnection.getID(), p);
