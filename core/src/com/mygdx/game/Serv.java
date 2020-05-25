@@ -4,7 +4,6 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Timer;
 
 public class Serv extends Listener {
@@ -17,7 +16,6 @@ public class Serv extends Listener {
 	private boolean full;
 	private static ArrayList<Connection> connectionsArray;
 	private static ArrayList<RoomClass> roomClasses;
-
 	static Timer timer;
 
 	public static void main(String[] args) throws Exception {
@@ -75,13 +73,6 @@ public class Serv extends Listener {
 			completed=false;
 		}
 		System.out.println("ROOM NUMBER = "+roomClasses.size());
-
-
-		/*if (count==2) {
-			timer=new Timer();
-			timer.schedule(new TimerPlay(), 0, 1000);
-		}
-		System.out.println("Соединение установлено");*/
 	}
 
 	//Используется когда клиент отправляет пакет серверу
@@ -94,69 +85,11 @@ public class Serv extends Listener {
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-		/*System.out.println(TimerPlay.time);
-		System.out.println(TimerPlay.seconds);
-
-		if (p instanceof MessageBox){
-			server.sendToAllExceptTCP(c.getID(),p);
-		}
-
-		if (p instanceof PlayerNameBox){
-			server.sendToAllExceptTCP(c.getID(),p);
-		}
-
-
-		if (p instanceof PlayersWaitingBox){
-			PlayersWaitingBox box=(PlayersWaitingBox) p;
-			box.count=count;
-			server.sendToUDP(c.getID(),box);
-		}
-		if (p instanceof CoordBox){
-			CoordBox box=(CoordBox) p;
-			if (box.getPlayerIdentify()==0) {
-				box.Btime=TimerPlay.time;
-				System.out.println(box.Btime);
-				box.seconds=TimerPlay.seconds;
-				box.setPlayerIdentify(playersID);
-				server.sendToTCP(c.getID(),box);
-				System.out.println("Пакет coord отправлен,playersID= "+playersID);
-				playersID++;
-			}
-			else {
-				//И здесь добавим коробку
-				box.Btime=TimerPlay.time;
-				box.seconds=TimerPlay.seconds;
-				//System.out.println("Another coord pack received from " +c.getID());
-				//System.out.println(box.BpositionPlayer.x+"                            "+box.BpositionPlayer.y);
-				server.sendToAllExceptTCP(c.getID(),box);
-				//server.sendToTCP(c.getID(),box);
-			}
-		}*/
 	}
 
 	//Используется когда клиент покидает сервер
 	public void disconnected(Connection c){
 		connectionsArray.remove(c);
-		/*count=0;
-		playersID=1;
-		TimerPlay.seconds=120;
-		TimerPlay.time="-1";
-		PlayersWaitingBox pw=new PlayersWaitingBox();
-		pw.count=-1;
-		try {
-			connectionsArray.remove(0);
-		}catch (Exception e){}
-		try {
-			connectionsArray.remove(1);
-		}catch (Exception e){}
-		server.sendToAllExceptTCP(c.getID(),pw);
-		try{
-			timer.cancel();
-		}
-		catch(Exception e){}
-		System.out.println("DISCONNECTED");
-		System.out.println(TimerPlay.time);
-		System.out.println(TimerPlay.seconds);*/
 		try {
 			for (RoomClass room : roomClasses) {
 					if (room.getFirstPlayerConnection().getID()==c.getID() || (room.getSecondPlayerConnection().getID()==c.getID())){
